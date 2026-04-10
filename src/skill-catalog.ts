@@ -410,6 +410,8 @@ const SERVER_SKILL_MAP: Record<string, string> = {
   'crawlio-browser': 'browser-automation',
   'mentu': 'mentu',
   'mentu-commander': 'mentu-commander',
+  'mentu-ane': 'mentu-ane',
+  'mentu-runtime': 'mentu-runtime',
   'mentu-desktop': 'mentu-desktop',
   'mentu-local': 'mentu-local',
   'playwright': 'playwright',

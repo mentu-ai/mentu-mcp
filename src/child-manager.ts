@@ -195,8 +195,18 @@ export class ChildManager extends EventEmitter {
     });
 
     // FSM event wiring
-    fsm.on('stateChange', ({ server, from, to }: { server: string; from: string; to: string; timestamp: number }) => {
+    fsm.on('stateChange', ({ server, from, to, timestamp }: { server: string; from: string; to: string; timestamp: number }) => {
       log('info', 'connection fsm', { server, from, to });
+      // CIR signal on degraded states
+      if (to === 'disconnected' || to === 'reconnecting') {
+        process.stderr.write(JSON.stringify({
+          type: 'cir_signal',
+          kind: 'mcp_connection',
+          body: `${server}: ${from} \u2192 ${to}`,
+          confidence: 1.0,
+          timestamp,
+        }) + '\n');
+      }
       // On successful reconnection, restore pool state
       if (to === 'connected' && from === 'reconnecting') {
         if (child.state === ConnectionState.FAILED) {
@@ -252,7 +262,7 @@ export class ChildManager extends EventEmitter {
           if (healed) {
             // Respect circuit breaker — don't retry if tripped
             if (child.circuitBreaker.isOpen()) {
-              log('warn', 'auto-healer: heal succeeded but circuit breaker open, skipping retry', { server: config.name });
+              log('warn', 'cortex healer: heal succeeded but circuit breaker open, skipping retry', { server: config.name });
             } else {
               // Retry inner spawn logic once after heal
               try {
@@ -268,11 +278,11 @@ export class ChildManager extends EventEmitter {
                 this.persistRegistry(config.name, tools.length, 'ok');
                 this.setState(child, ConnectionState.IDLE);
                 this.emit('server-connected', config.name, tools);
-                log('info', 'auto-healer: retry succeeded', { server: config.name });
+                log('info', 'cortex healer: retry succeeded', { server: config.name });
                 return child;
               } catch {
                 // Heal retry also failed — fall through to FAILED
-                log('warn', 'auto-healer: retry failed', { server: config.name });
+                log('warn', 'cortex healer: retry failed', { server: config.name });
               }
             }
           }

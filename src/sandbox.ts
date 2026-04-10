@@ -160,7 +160,7 @@ function buildContext(
   // global, globalThis
   // These are simply not copied into the sandbox.
 
-  // Inject extra globals (e.g., for extended sandbox capabilities)
+  // Inject extra globals (e.g., mentu SDK for script-runner)
   if (extraGlobals) {
     for (const [name, value] of Object.entries(extraGlobals)) {
       sandbox[name] = typeof value === 'object' && value !== null

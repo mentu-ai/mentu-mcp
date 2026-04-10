@@ -26,7 +26,7 @@ export function canTransition(from: ConnectionState, to: ConnectionState): boole
 
 export type ServiceCriticality = 'vital' | 'optional';
 
-export type ServerTransport = 'stdio' | 'http' | 'sse' | 'unix-http' | 'unix-jsonrpc';
+export type ServerTransport = 'stdio' | 'http' | 'sse' | 'unix-http' | 'unix-jsonrpc' | 'mesh-tls';
 export type ServerAuth = 'none' | 'bearer' | 'oauth';
 
 export interface ServerConfig {
@@ -40,8 +40,10 @@ export interface ServerConfig {
   url?: string;                 // Remote server URL (for http/sse transport)
   headers?: Record<string, string>;  // Auth headers (for http/sse transport)
   auth?: ServerAuth;            // Auth method: 'none' (default), 'bearer' (uses headers), 'oauth' (browser flow)
+  vmIsolation?: boolean;        // Run inside mentu-runtime VM via VsockTransport
   socketPath?: string;          // Unix domain socket path (for unix-http/unix-jsonrpc transport)
   timeoutMs?: number;           // Per-tool-call timeout in ms (default: 60000)
+  engine?: 'hybrid' | 'native' | 'bridge';  // Execution engine mode (default: hybrid)
 }
 
 /**

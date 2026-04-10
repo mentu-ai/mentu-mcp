@@ -5,6 +5,7 @@ import type { ServerConfig, IntentRouteMap } from './types.js';
 import type { ElicitationConfig, ElicitationMode } from './elicitation.js';
 import { log } from './log.js';
 import { resolveSecrets } from './vault-resolver.js';
+import { loadActivation, isActivated, getTier } from './activation.js';
 
 interface McpJsonEntry {
   command?: string;
@@ -17,7 +18,9 @@ interface McpJsonEntry {
   socketPath?: string;               // Unix domain socket path (for unix-http/unix-jsonrpc)
   headers?: Record<string, string>;  // Auth headers (env var interpolation)
   auth?: 'none' | 'bearer' | 'oauth';  // Auth method (default: none)
+  vmIsolation?: boolean;              // Run inside mentu-runtime VM
   timeout?: number;                   // Per-tool-call timeout in ms (default: 60000)
+  engine?: 'hybrid' | 'native' | 'bridge';  // Execution engine mode
 }
 
 
@@ -99,12 +102,35 @@ export function loadConfig(configPath?: string, full?: true): ServerConfig[] | M
         url: entry.url,
         headers: entry.headers ? resolveSecrets(entry.headers) : undefined,
         auth: (entry.auth as ServerConfig['auth']) ?? undefined,
+        vmIsolation: entry.vmIsolation,
         socketPath: entry.socketPath,
         timeoutMs: entry.timeout,
+        engine: entry.engine ?? 'hybrid',
       }))
     : [];
 
-  if (!full) return serverConfigs;
+  // Activation gate: filter by activated.json and set vmIsolation from tier
+  const activation = loadActivation();
+  const activatedNames = new Set(Object.keys(activation.activated));
+  const filteredConfigs = serverConfigs.filter(c => {
+    // Backward compat: servers not in activated.json pass through
+    if (!activatedNames.has(c.name)) return true;
+    return isActivated(c.name);
+  });
+  for (const c of filteredConfigs) {
+    if (getTier(c.name) === 'vm') {
+      c.vmIsolation = true;
+    }
+  }
+  if (filteredConfigs.length < serverConfigs.length) {
+    log('info', 'activation gate filtered servers', {
+      before: serverConfigs.length,
+      after: filteredConfigs.length,
+    });
+  }
+
+  if (!full) return filteredConfigs;
+
   // Parse intent routing config
   const intents: IntentRouteMap = {};
   if (parsed.intents) {
@@ -147,5 +173,5 @@ export function loadConfig(configPath?: string, full?: true): ServerConfig[] | M
     }
   }
 
-  return { servers: serverConfigs, intents, elicitation, dependencies };
+  return { servers: filteredConfigs, intents, elicitation, dependencies };
 }
