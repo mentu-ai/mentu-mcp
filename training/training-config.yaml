@@ -1,0 +1,67 @@
+# Mentu Model — Multi-head adapter training configuration
+# Phase 9: Classification + prediction model for ANE deployment
+# Base model selected at training time from candidate list
+
+base_model: "phi-3-mini"
+method: "lora"
+lora_rank: 16
+lora_alpha: 32
+learning_rate: 2e-5
+batch_size: 32
+epochs: 3
+warmup_ratio: 0.1
+weight_decay: 0.01
+evaluation_strategy: "steps"
+eval_steps: 500
+save_steps: 1000
+fp16: true
+
+heads:
+  domain_classifier:
+    labels:
+      - security
+      - web-crawling
+      - api
+      - binary-analysis
+      - devops
+      - data
+      - testing
+      - documentation
+      - infrastructure
+      - general
+    min_samples_per_label: 100
+    training_source: "classification.jsonl"
+    input: "intent_text"
+    output: "domain_probability_distribution"
+
+  stopping_predictor:
+    context_features: 6
+    output:
+      - should_stop
+      - success_probability
+    training_source: "policy-evaluation.jsonl"
+    input: ["domain", "calls_used", "max_calls", "trust_mean", "trust_stddev", "contradiction_count"]
+
+  trust_trajectory:
+    window_size: 10
+    prediction_horizon: 3
+    training_source: "trust-evolution.db"
+    input: "trust_score_sequence"
+    output: "predicted_trust_at_steps"
+
+candidates:
+  - name: "phi-3-mini"
+    params: "3.8B"
+    ane_compat: "good"
+  - name: "llama-3.2-3b"
+    params: "3B"
+    ane_compat: "good"
+  - name: "custom-distilled"
+    params: "~3B"
+    ane_compat: "by-design"
+
+constraints:
+  target_device: "apple-neural-engine"
+  quantization: "int8-mixed"
+  max_latency_ms: 10
+  min_throughput_tok_s: 50

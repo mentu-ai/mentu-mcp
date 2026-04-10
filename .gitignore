@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.mentu/
+.claude/
+.env
+.DS_Store
+*.tgz
+.pre-sync-backup/

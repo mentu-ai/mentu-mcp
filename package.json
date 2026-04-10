@@ -1,0 +1,44 @@
+{
+  "name": "mentu-mcp",
+  "version": "1.0.0",
+  "description": "MCP intelligence layer — intent routing, perception, judgment, and sandboxed code execution across child MCP servers.",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "mentu-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc && node --eval \"const fs=require('fs');if(fs.existsSync('dist/index.js'))fs.writeFileSync('dist/index.js','#!/usr/bin/env node\\n'+fs.readFileSync('dist/index.js','utf8'))\"",
+    "start": "node dist/index.js",
+    "test": "npm run build && node dist/__tests__/sandbox.test.js && node dist/__tests__/child-manager.test.js && node dist/__tests__/store.test.js && node dist/__tests__/vector-catalog.test.js && node dist/__tests__/bpe-tokenizer.test.js && node dist/__tests__/evidence.test.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "ai",
+    "llm",
+    "agent",
+    "tool-routing",
+    "mcp-orchestration"
+  ],
+  "author": "Mentu AI",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "better-sqlite3": "^12.6.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.3.2",
+    "typescript": "^5.9.3"
+  }
+}

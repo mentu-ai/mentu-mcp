@@ -1,0 +1,49 @@
+{
+  "intents": {
+    "crawl": "crawlio.start_crawl",
+    "analyze": "crawlio.analyze_page",
+    "decompile": "ghidra.decompile_function",
+    "capture": "crawlio.trigger_capture",
+    "disassemble": "ghidra.disassemble_function",
+    "search_functions": "ghidra.search_functions_by_name",
+    "list_strings": "ghidra.list_strings",
+    "browse": "crawlio-browser.execute"
+  },
+  "elicitation": {
+    "mode": "auto"
+  },
+  "mcpServers": {
+    "mentu": {
+      "command": "npx",
+      "args": ["-y", "mentu-mcp"],
+      "env": {
+        "MENTU_API_TOKEN": "your_mentu_api_token",
+        "MENTU_WORKSPACE_ID": "your_workspace_id",
+        "MENTU_API_URL": "https://mentu-proxy.affihub.workers.dev"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "crawlio": {
+      "command": "/path/to/crawlio-mcp"
+    },
+    "ghidra": {
+      "command": "python3",
+      "args": ["/path/to/ghidra-mcp-bridge"],
+      "env": {
+        "GHIDRA_HOST": "127.0.0.1",
+        "GHIDRA_PORT": "8089"
+      }
+    },
+    "crawlio-browser": {
+      "command": "npx",
+      "args": ["-y", "crawlio-browser"]
+    },
+    "metamcp": {
+      "command": "node",
+      "args": ["./dist/index.js", "--config", "./.mcp.test.json"]
+    }
+  }
+}
