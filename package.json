@@ -9,6 +9,7 @@
   },
   "files": [
     "dist",
+    "!dist/__tests__",
     "README.md"
   ],
   "engines": {
@@ -18,7 +19,8 @@
     "build": "tsc && node --eval \"const fs=require('fs');if(fs.existsSync('dist/index.js'))fs.writeFileSync('dist/index.js','#!/usr/bin/env node\\n'+fs.readFileSync('dist/index.js','utf8'))\"",
     "start": "node dist/index.js",
     "test": "npm run build && node dist/__tests__/sandbox.test.js && node dist/__tests__/child-manager.test.js && node dist/__tests__/store.test.js && node dist/__tests__/vector-catalog.test.js && node dist/__tests__/bpe-tokenizer.test.js && node dist/__tests__/evidence.test.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
@@ -30,7 +32,15 @@
     "tool-routing",
     "mcp-orchestration"
   ],
-  "author": "Mentu AI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mentu-ai/mentu-mcp.git"
+  },
+  "homepage": "https://github.com/mentu-ai/mentu-mcp",
+  "bugs": {
+    "url": "https://github.com/mentu-ai/mentu-mcp/issues"
+  },
+  "author": "Rashid Azarang",
   "license": "Apache-2.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",

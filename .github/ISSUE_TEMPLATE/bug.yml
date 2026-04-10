@@ -1,12 +1,12 @@
 name: Bug Report
-description: Report a bug in MetaMCP
+description: Report a bug in mentu-mcp
 labels: [bug]
 body:
   - type: input
     id: version
     attributes:
-      label: MetaMCP Version
-      description: Run `metamcp --version` to get this.
+      label: mentu-mcp Version
+      description: Run `mentu-mcp --version` to get this.
       placeholder: "0.1.0"
     validations:
       required: true

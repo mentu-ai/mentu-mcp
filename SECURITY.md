@@ -4,7 +4,7 @@
 
 **Do not open a public issue for security vulnerabilities.**
 
-Please report vulnerabilities through [GitHub's private vulnerability reporting](https://github.com/mentu-ai/metamcp/security/advisories/new).
+Please report vulnerabilities through [GitHub's private vulnerability reporting](https://github.com/mentu-ai/mentu-mcp/security/advisories/new).
 
 Include:
 
@@ -17,7 +17,7 @@ We will acknowledge your report within 48 hours and provide a timeline for a fix
 
 ## Scope
 
-MetaMCP has a security-sensitive architecture. The following areas are in scope:
+mentu-mcp has a security-sensitive architecture. The following areas are in scope:
 
 - **V8 sandbox escape** — any code that breaks out of the `mcp_execute` sandbox (`vm.Context` isolation, prototype freezing, `eval`/`Function` constructor blocking)
 - **Child process injection** — command injection via `.mcp.json` config entries, argument manipulation, or environment variable leakage

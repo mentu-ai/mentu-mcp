@@ -1,12 +1,12 @@
-# Contributing to MetaMCP
+# Contributing to mentu-mcp
 
-Thank you for your interest in contributing to MetaMCP.
+Thank you for your interest in contributing to mentu-mcp.
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/mentu-ai/metamcp.git
-cd metamcp
+git clone https://github.com/mentu-ai/mentu-mcp.git
+cd mentu-mcp
 npm ci
 npm run build
 ```
@@ -70,4 +70,4 @@ test(catalog): add fuzzy search edge cases
 
 ## Reporting Issues
 
-Use [GitHub Issues](https://github.com/mentu-ai/metamcp/issues) with the provided templates. For security vulnerabilities, see [SECURITY.md](SECURITY.md).
+Use [GitHub Issues](https://github.com/mentu-ai/mentu-mcp/issues) with the provided templates. For security vulnerabilities, see [SECURITY.md](SECURITY.md).
