@@ -3,9 +3,8 @@
  *
  * The VectorStore must not care where embeddings come from --
  * only that it receives a Float32Array. This abstraction exists
- * so we can swap the cloud Anthropic embedder for a local
- * MentuANE hardware embedder (Mentu Cortex, zero-latency,
- * zero-cost, air-gapped) when mentu-cortex is ready.
+ * so we can swap the cloud embedder for a local hardware
+ * embedder (zero-latency, zero-cost, air-gapped) when ready.
  */
 export interface EmbedderProvider {
   embedBatch(texts: string[]): Promise<Float32Array[]>;
@@ -78,7 +77,7 @@ export class AnthropicEmbedderProvider implements EmbedderProvider {
 /**
  * Embedder facade -- delegates to the best available EmbedderProvider.
  *
- * Provider selection order: Local Cortex → Anthropic → error.
+ * Provider selection order: Local → Anthropic → error.
  * Pass an explicit provider to override auto-detection.
  */
 export class Embedder {

@@ -35,30 +35,12 @@ export class McpClient {
   }
 
   async connect(): Promise<void> {
-    let command: string;
-    let args: string[];
-    let env: Record<string, string>;
-
-    if (this.config.sandbox) {
-      // Spawn inside mentu-runtime VM
-      command = 'mentu-runtime';
-      args = [
-        'exec',
-        '--profile', this.config.sandbox,
-        '--',
-        this.config.command,
-        ...(this.config.args ?? []),
-      ];
-      env = { ...process.env } as Record<string, string>;
-    } else {
-      // Spawn as local process (existing behavior)
-      command = this.config.command;
-      args = this.config.args ?? [];
-      env = {
-        ...process.env,
-        ...this.config.env,
-      } as Record<string, string>;
-    }
+    const command = this.config.command;
+    const args = this.config.args ?? [];
+    const env = {
+      ...process.env,
+      ...this.config.env,
+    } as Record<string, string>;
 
     this.transport = new StdioClientTransport({ command, args, env });
 
