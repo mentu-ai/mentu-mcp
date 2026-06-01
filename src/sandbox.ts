@@ -234,15 +234,16 @@ export async function execute(
   // For async code, we race the promise against a timeout.
   const effectiveTimeout = timeoutMs ?? EXECUTION_TIMEOUT_MS;
   let value: unknown;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
   try {
     const promise = script.runInContext(ctx, { timeout: effectiveTimeout });
 
     // Race against timeout for the async portion
     value = await Promise.race([
       promise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Execution timeout')), effectiveTimeout)
-      ),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error('Execution timeout')), effectiveTimeout);
+      }),
     ]);
   } catch (err) {
     // Re-throw with sanitized message (no host paths/stack traces)
@@ -250,6 +251,8 @@ export async function execute(
       throw new Error(`Sandbox error: ${err.message}`);
     }
     throw new Error(`Sandbox error: ${String(err)}`);
+  } finally {
+    if (timeout) clearTimeout(timeout);
   }
 
   // Step 7-8: Cap result value size and return
