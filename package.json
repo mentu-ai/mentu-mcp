@@ -1,6 +1,6 @@
 {
   "name": "mentu-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP intelligence layer — intent routing, perception, judgment, and sandboxed code execution across child MCP servers.",
   "main": "dist/index.js",
   "type": "module",
@@ -16,11 +16,12 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "tsc && node --eval \"const fs=require('fs');if(fs.existsSync('dist/index.js'))fs.writeFileSync('dist/index.js','#!/usr/bin/env node\\n'+fs.readFileSync('dist/index.js','utf8'))\"",
+    "build": "tsc && node --eval \"const fs=require('fs');if(fs.existsSync('dist/index.js')){const c=fs.readFileSync('dist/index.js','utf8');if(!c.startsWith('#!'))fs.writeFileSync('dist/index.js','#!/usr/bin/env node\\n'+c);fs.chmodSync('dist/index.js',0o755)}\"",
     "start": "node dist/index.js",
     "test": "npm run build && node dist/__tests__/sandbox.test.js && node dist/__tests__/child-manager.test.js && node dist/__tests__/store.test.js && node dist/__tests__/vector-catalog.test.js && node dist/__tests__/bpe-tokenizer.test.js && node dist/__tests__/evidence.test.js",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "smoke:bin": "npm run build && node dist/index.js --version",
+    "prepublishOnly": "npm run smoke:bin"
   },
   "keywords": [
     "mcp",
