@@ -35,7 +35,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mentu-ai/mentu-mcp.git"
+    "url": "git+https://github.com/mentu-ai/mentu-mcp.git"
   },
   "homepage": "https://github.com/mentu-ai/mentu-mcp",
   "bugs": {
